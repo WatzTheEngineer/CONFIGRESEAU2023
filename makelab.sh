@@ -120,4 +120,8 @@ ip route add default 11.0.0.1 dev eth0
 "
 
 echo "Lab successfully created"
+
+echo "Lab is starting ..."
+kathara lstart
+
 exit 0
