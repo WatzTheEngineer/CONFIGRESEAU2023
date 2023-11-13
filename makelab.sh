@@ -93,6 +93,56 @@ ip route add 192.168.32.0/20 via 10.0.3.2
 ip route add 11.0.0.0/26 via 10.0.2.2
 "
 
+create_config_file "$R1" "
+ip addr add 10.0.0.2/24 dev eth0
+ip link set eth0 up
+ip addr add 192.168.31.254/20 dev eth1
+ip link set eth1 up
+ip route add 10.0.3.1/24 via 10.0.0.1
+echo 1 > /proc/sys/net/ipv4/ip_forward
+"
+
+create_config_file "$R2" "
+ip addr add 10.0.3.2/24 dev eth0
+ip link set eth0 up
+ip addr add 192.168.47.254/20 dev eth1
+ip link set eth1 up
+ip route add 10.0.0.1/24 via 10.0.3.1
+echo 1 > /proc/sys/net/ipv4/ip_forward
+"
+
+create_config_file "$R3" "
+ip addr add 10.0.2.2/24 dev eth0
+ip link set eth0 up
+ip addr add 11.0.0.1/26 dev eth1
+ip link set eth1 up
+echo 1 > /proc/sys/net/ipv4/ip_forward
+"
+
+create_config_file "$R4" "
+ip addr add 10.0.1.2/24 dev eth0
+ip link set eth0 up
+echo 1 > /proc/sys/net/ipv4/ip_forward
+"
+
+create_config_file "$PCE1" "
+ip address add 192.168.16.1/20 dev eth0
+ip link set eth0 up
+ip route add default via 192.168.31.254 dev eth0
+"
+
+create_config_file "$PCA1" "
+ip address add 192.168.32.1 dev eth1
+ip link set eth1 up
+ip route add default via 192.168.47.254 dev eth0
+"
+
+create_config_file "$PCD1" "
+ip address add 11.0.0.2/26 dev eth0
+ip link set eth0 up
+ip route add default 11.0.0.1 dev eth0
+"
+
 echo "Lab successfully created in $LAB"
 
 if [ "$START_LAB" = true ]; then
