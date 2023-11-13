@@ -49,7 +49,7 @@ while getopts ":l:s" opt; do
 done
 
 if [ -z "$LAB" ]; then
-  exit_with_error "Please specify the lab location using -l <path>."
+  LAB="$PWD"
 fi
 
 if [ ! -d "$LAB" ]; then
@@ -93,7 +93,7 @@ ip route add 192.168.32.0/20 via 10.0.3.2
 ip route add 11.0.0.0/26 via 10.0.2.2
 "
 
-echo "Lab successfully created"
+echo "Lab successfully created in $LAB"
 
 if [ "$START_LAB" = true ]; then
   echo "Lab is starting ..."
