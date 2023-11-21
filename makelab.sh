@@ -108,7 +108,9 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
-iptables -A FORWARD -p tcp --dport 1234 -s 192.168.31.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 192.168.16.0/20 -j ACCEPT
+iptables -A INPUT -p icmp -s 192.168.16.0/20 -j ACCEPT
+iptables -A OUTPUT -p icmp -s 192.168.16.0/20 -j ACCEPT
 "
 
 create_config_file "$R2" "
@@ -121,6 +123,8 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
+iptables -A INPUT -p icmp -s 192.168.32.0/20 -j ACCEPT
+iptables -A OUTPUT -p icmp -s 192.168.32.0/20 -j ACCEPT
 "
 
 create_config_file "$R3" "
