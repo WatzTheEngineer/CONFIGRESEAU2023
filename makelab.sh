@@ -10,6 +10,7 @@ R4="r4.startup"
 PCA1="pca1.startup"
 PCE1="pce1.startup"
 PCD1="pcd1.startup"
+S="s.startup"
 START_LAB=false
 
 create_config_file() {
@@ -178,11 +179,15 @@ ip route add default via  11.0.0.1 dev eth0
 echo ‘nameserver 8.8.8.8’ > /etc/resolv.conf
 "
 
+create_config_file "$S "
+"
+
 echo "Lab successfully created in $LAB"
 
 if [ "$START_LAB" = true ]; then
   echo "Lab is starting ..."
   kathara lstart || exit_with_error "Error starting the lab."
+  echo "n"
 else
   echo "Lab not started. Use -s option to start the lab."
 fi
