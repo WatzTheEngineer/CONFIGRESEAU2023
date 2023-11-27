@@ -93,6 +93,8 @@ ip route add 192.168.16.0/20 via 10.0.0.2
 ip route add 192.168.32.0/20 via 10.0.3.2
 ip route add 11.0.0.0/26 via 10.0.2.2
 ip route add 172.12.150.0/24 via 10.0.1.2
+iptables -t nat -A POSTROUTING -o eth4 -j MASQUERADE
+echo ‘nameserver 8.8.8.8’ > /etc/resolv.conf
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
@@ -105,6 +107,7 @@ ip addr add 192.168.31.254/20 dev eth1
 ip link set eth1 up
 ip route add default via 10.0.0.1 dev eth0
 echo 1 > /proc/sys/net/ipv4/ip_forward
+echo ‘nameserver 8.8.8.8’ > /etc/resolv.conf
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
@@ -120,6 +123,7 @@ ip addr add 192.168.47.254/20 dev eth1
 ip link set eth1 up
 ip route add default via 10.0.3.1 dev eth0
 echo 1 > /proc/sys/net/ipv4/ip_forward
+echo ‘nameserver 8.8.8.8’ > /etc/resolv.conf
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
@@ -134,6 +138,7 @@ ip addr add 11.0.0.1/26 dev eth1
 ip link set eth1 up
 ip route add default via 10.0.2.1 dev eth0
 echo 1 > /proc/sys/net/ipv4/ip_forward
+echo ‘nameserver 8.8.8.8’ > /etc/resolv.conf
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
@@ -146,6 +151,7 @@ ip addr add 172.12.150.254/24 dev eth1
 ip link set eth1 up
 ip route add default via 10.0.1.1 dev eth0
 echo 1 > /proc/sys/net/ipv4/ip_forward
+echo ‘nameserver 8.8.8.8’ > /etc/resolv.conf
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
@@ -155,18 +161,21 @@ create_config_file "$PCE1" "
 ip address add 192.168.16.1/20 dev eth0
 ip link set eth0 up
 ip route add default via 192.168.31.254 dev eth0
+echo ‘nameserver 8.8.8.8’ > /etc/resolv.conf
 "
 
 create_config_file "$PCA1" "
 ip address add 192.168.32.1/20 dev eth0
 ip link set eth0 up
 ip route add default via 192.168.47.254 dev eth0
+echo ‘nameserver 8.8.8.8’ > /etc/resolv.conf
 "
 
 create_config_file "$PCD1" "
 ip address add 11.0.0.2/26 dev eth0
 ip link set eth0 up
 ip route add default via  11.0.0.1 dev eth0
+echo ‘nameserver 8.8.8.8’ > /etc/resolv.conf
 "
 
 echo "Lab successfully created in $LAB"
