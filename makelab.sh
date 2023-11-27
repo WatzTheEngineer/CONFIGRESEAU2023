@@ -179,7 +179,7 @@ ip route add default via  11.0.0.1 dev eth0
 echo ‘nameserver 8.8.8.8’ > /etc/resolv.conf
 "
 
-create_config_file "$S "
+create_config_file "$S" "
 "
 
 echo "Lab successfully created in $LAB"
