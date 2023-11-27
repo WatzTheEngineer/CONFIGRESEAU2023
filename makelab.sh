@@ -180,6 +180,9 @@ echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
 "
 
 create_config_file "$S" "
+ip addr add 172.12.150.1/24 dev eth0
+ip link set eth0 up
+ip route add default via 172.12.150.254 dev eth0
 "
 
 echo "Lab successfully created in $LAB"
