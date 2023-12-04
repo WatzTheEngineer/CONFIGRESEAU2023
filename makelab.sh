@@ -103,6 +103,10 @@ iptables -A FORWARD -s 172.12.150.1 -p icmp -j ACCEPT
 iptables -A FORWARD -s 192.168.16.0/20 -p icmp -j ACCEPT
 iptables -A FORWARD -s 192.168.32.0/20 -p icmp -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -s 11.0.0.0/26 -j ACCEPT
+iptables -A OUTPUT -p icmp -j ACCEPT
+iptables -A INPUT -p icmp -j ACCEPT
+iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+iptables -A INPUT -p udp --sport 53 -j ACCEPT
 "
 
 create_config_file "$R1" "
@@ -116,8 +120,8 @@ echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
-iptables -A FORWARD -p icmp -s 192.168.16.0/20 -j ACCEPT
-iptables -A FORWARD -p icmp -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 172.12.150.1 -j ACCEPT
 iptables -A INPUT -p icmp -s 192.168.16.0/20 -j ACCEPT
 iptables -A OUTPUT -p icmp -s 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -s 11.0.0.0/26 -j ACCEPT
@@ -136,8 +140,8 @@ iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 iptables -A INPUT -p icmp -s 192.168.32.0/20 -j ACCEPT
 iptables -A OUTPUT -p icmp -s 192.168.32.0/20 -j ACCEPT
-iptables -A FORWARD -s 172.12.150.1 -p icmp -j ACCEPT
-iptables -A FORWARD -s 192.168.32.0/20 -p icmp -j ACCEPT
+iptables -A FORWARD -s 172.12.150.1 -p tcp --dport 1234 -j ACCEPT
+iptables -A FORWARD -s 192.168.32.0/20 -p tcp --dport 1234 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -s 11.0.0.0/26 -j ACCEPT
 "
 
@@ -153,7 +157,8 @@ iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 iptables -A FORWARD -p tcp --dport 587 -s 11.0.0.0/26 -j ACCEPT
-"
+iptables -A INPUT -s 11.0.0.0/26 -p icmp -j ACCEPT
+iptables -A OUTPUT -d 11.0.0.0/26 -p icmp -j ACCEPT"
 
 create_config_file "$R4" "
 ip addr add 10.0.1.2/24 dev eth0
@@ -168,8 +173,8 @@ iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 iptables -A INPUT -p icmp -s 172.12.150.1 -j ACCEPT
 iptables -A OUTPUT -p icmp -d 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p icmp -s 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p icmp -s 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -s 192.168.32.0/20 -p icmp -j ACCEPT
 "
 
