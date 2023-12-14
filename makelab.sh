@@ -107,6 +107,12 @@ iptables -A OUTPUT -p icmp -j ACCEPT
 iptables -A INPUT -p icmp -j ACCEPT
 iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
 iptables -A INPUT -p udp --sport 53 -j ACCEPT
+iptables -A FORWARD -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -p udp --sport 53 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 192.168.16.0/20 -d 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -d 172.12.150.1 -j ACCEPT
 "
 
 create_config_file "$R1" "
@@ -125,6 +131,11 @@ iptables -A FORWARD -p tcp --dport 1234 -s 172.12.150.1 -j ACCEPT
 iptables -A INPUT -p icmp -s 192.168.16.0/20 -j ACCEPT
 iptables -A OUTPUT -p icmp -s 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -s 11.0.0.0/26 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
+iptables -A FORWARD -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -p udp --sport 53 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 192.168.16.0/20 -j ACCEPT
 "
 
 create_config_file "$R2" "
@@ -143,6 +154,10 @@ iptables -A OUTPUT -p icmp -s 192.168.32.0/20 -j ACCEPT
 iptables -A FORWARD -s 172.12.150.1 -p tcp --dport 1234 -j ACCEPT
 iptables -A FORWARD -s 192.168.32.0/20 -p tcp --dport 1234 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -s 11.0.0.0/26 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
+iptables -A FORWARD -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -p udp --sport 53 -j ACCEPT
 "
 
 create_config_file "$R3" "
@@ -160,6 +175,7 @@ iptables -A FORWARD -p tcp --dport 587 -s 11.0.0.0/26 -j ACCEPT
 iptables -A INPUT -s 11.0.0.0/26 -p icmp -j ACCEPT
 iptables -A OUTPUT -d 11.0.0.0/26 -p icmp -j ACCEPT
 iptables -A FORWARD -d 172.12.150.1 -p tcp --dport 22 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -j ACCEPT
 "
 
 create_config_file "$R4" "
@@ -179,6 +195,8 @@ iptables -A FORWARD -p tcp --dport 1234 -s 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 1234 -s 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -s 192.168.32.0/20 -p icmp -j ACCEPT
 iptables -A FORWARD -s 11.0.0.0/26 -p tcp --dport 22 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -j ACCEPT
 "
 
 create_config_file "$PCE1" "
