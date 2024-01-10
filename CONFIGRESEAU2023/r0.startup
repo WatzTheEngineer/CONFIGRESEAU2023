@@ -1,0 +1,28 @@
+ip addr add 10.0.0.1/24 dev eth0
+ip link set eth0 up
+iptables -t nat -A POSTROUTING -j MASQUERADE
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+ip route add 192.168.16.0/20 via 10.0.0.2
+ip route add 192.168.32.0/20 via 10.0.0.3
+ip route add 11.0.0.0/26 via 10.0.0.4
+ip route add 172.12.150.0/24 via 10.0.0.5
+
+iptables -P INPUT DROP
+iptables -P FORWARD DROP 
+iptables -P OUTPUT DROP
+
+#mail
+iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 25 -j ACCEPT
+
+#tcp 1234
+iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
+
+#SSH/SFTP
+iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -j ACCEPT
+
+#
+
+ 
