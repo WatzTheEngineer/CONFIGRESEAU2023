@@ -128,8 +128,8 @@ iptables -P INPUT DROP
 iptables -P FORWARD DROP 
 iptables -P OUTPUT DROP
 #mail
-iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 25 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
 #tcp 1234
 iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
@@ -157,8 +157,8 @@ iptables -P INPUT DROP
 iptables -P FORWARD DROP 
 iptables -P OUTPUT DROP
 #mail
-iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 25 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
 #tcp 1234
 iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
@@ -189,8 +189,8 @@ iptables -P INPUT DROP
 iptables -P FORWARD DROP 
 iptables -P OUTPUT DROP
 #mail
-iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 25 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
 #tcp 1234
 iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
@@ -221,8 +221,8 @@ iptables -P INPUT DROP
 iptables -P FORWARD DROP 
 iptables -P OUTPUT DROP
 #mail
-iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 25 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
 #tcp 1234
 iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
@@ -304,7 +304,7 @@ echo "Lab successfully created in $LAB"
 if [ "$START_LAB" = true ]; then
   echo "Lab is starting ..."
   kathara lstart || exit_with_error "Error starting the lab."
-  echo "n"
+  echo "n" | kathara
 else
   echo "Lab not started. Use -s option to start the lab."
 fi
