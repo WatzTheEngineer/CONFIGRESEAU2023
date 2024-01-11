@@ -1,4 +1,4 @@
-
+﻿
 ip addr add 10.0.0.2/24 dev eth0
 ip link set eth0 up
 ip addr add 192.168.31.254/20 dev eth1
@@ -6,4 +6,31 @@ ip link set eth1 up
 ip route add default via 10.0.0.1 dev eth0
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
+iptables -P INPUT DROP
+iptables -P FORWARD DROP 
+iptables -P OUTPUT DROP
+
+#mail
+iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 25 -j ACCEPT
+
+#tcp 1234
+iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
+
+
+#HTTPS/HTTP
+iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
+
+iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
+
+#DNS
+iptables -A FORWARD -p tcp --dport 53 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 53 -j ACCEPT
+
+iptables -A FORWARD -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -p udp --sport 53 -j ACCEPT
 
