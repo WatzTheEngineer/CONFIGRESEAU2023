@@ -122,6 +122,10 @@ iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -d 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 22 -d 11.0.0.0/26 -s 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 192.186.16.0/20 -d 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 1234 -d 192.186.16.0/20 -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 192.186.32.0/20 -d 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 1234 -d 192.186.32.0/20 -s 172.12.150.1 -j ACCEPT
 "
 
 create_config_file "$R1" "
