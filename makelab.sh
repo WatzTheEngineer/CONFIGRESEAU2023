@@ -218,6 +218,7 @@ iptables -A FORWARD -p icmp -s 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p icmp -d 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 1234 -s 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 1234 -s 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 192.168.32.0/20 -j ACCEPT
 iptables -A FORWARD -s 192.168.32.0/20 -p icmp -j ACCEPT
 iptables -A FORWARD -p tcp --sport 22 -d 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -j ACCEPT
