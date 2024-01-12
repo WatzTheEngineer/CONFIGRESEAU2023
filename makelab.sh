@@ -63,54 +63,65 @@ LAB_CONF_PATH="$PWD/$LAB_CONF"
 
 create_config_file "$LAB_CONF_PATH" "
 r0[0]=net0
+r0[1]=net1
+r0[2]=net2
+r0[3]=net3
 r0[bridged]=true
 r1[0]=net0
-r2[0]=net0
-r3[0]=net0
-r4[0]=net0
-r1[1]=net1
-r2[1]=net2
-r3[1]=net3
-r4[1]=net4
-s[0]=net4
-pca1[0]=net2
-pcd1[0]=net3
-pce1[0]=net1
+r1[1]=net4
+r2[0]=net3
+r2[1]=net5
+r3[0]=net2
+r3[1]=net6
+r4[0]=net1
+r4[1]=net7
+s[0]=net7
+pca1[0]=net5
+pcd1[0]=net6
+pce1[0]=net4
 "
 
 create_config_file "$R0" "
 ip addr add 10.0.0.1/24 dev eth0
 ip link set eth0 up
-iptables -t nat -A POSTROUTING -j MASQUERADE
-echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
+ip addr add 10.0.1.1/24 dev eth1
+ip link set eth1 up
+ip addr add 10.0.2.1/24 dev eth2
+ip link set eth2 up
+ip addr add 10.0.3.1/24 dev eth3
+ip link set eth3 up
 ip route add 192.168.16.0/20 via 10.0.0.2
-ip route add 192.168.32.0/20 via 10.0.0.3
-ip route add 11.0.0.0/26 via 10.0.0.4
-ip route add 172.12.150.0/24 via 10.0.0.5
+ip route add 192.168.32.0/20 via 10.0.3.2
+ip route add 11.0.0.0/26 via 10.0.2.2
+ip route add 172.12.150.0/24 via 10.0.1.2
+iptables -t nat -A POSTROUTING -o eth4 -j MASQUERADE
+echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
 iptables -P INPUT DROP
-iptables -P FORWARD DROP 
+iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
-#mail
-iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 25 -j ACCEPT
-#tcp 1234
-iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
-#SSH/SFTP
-iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -j ACCEPT
-#HTTPS/HTTP
-iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
-#DNS
-iptables -A FORWARD -p tcp --dport 53 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 53 -j ACCEPT
+iptables -A FORWARD -s 172.12.150.1 -p icmp -j ACCEPT
+iptables -A FORWARD -s 192.168.16.0/20 -p icmp -j ACCEPT
+iptables -A FORWARD -s 192.168.32.0/20 -p icmp -j ACCEPT
+iptables -A FORWARD -p icmp -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p icmp -d 172.12.150.1 -j ACCEPT
+iptables -A OUTPUT -p icmp -j ACCEPT
+iptables -A INPUT -p icmp -j ACCEPT
+iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+iptables -A INPUT -p udp --sport 53 -j ACCEPT
 iptables -A FORWARD -p udp --dport 53 -j ACCEPT
 iptables -A FORWARD -p udp --sport 53 -j ACCEPT
-#PING
-iptables -A FORWARD -p icmp -j ACCEPT
+iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -d 192.168.16.0/20 -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -d 192.168.16.0/20 -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 192.168.32.0/20 -d 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -s 192.168.32.0/20 -d 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -d 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -d 11.0.0.0/26 -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
 "
 
 create_config_file "$R1" "
@@ -122,128 +133,106 @@ ip route add default via 10.0.0.1 dev eth0
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
 iptables -P INPUT DROP
-iptables -P FORWARD DROP 
+iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
-#mail
+iptables -A FORWARD -p tcp --dport 1234 -s 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 172.12.150.1 -j ACCEPT
+iptables -A INPUT -p icmp -s 192.168.16.0/20 -j ACCEPT
+iptables -A OUTPUT -p icmp -s 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
-#tcp 1234
-iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
-#HTTPS/HTTP
-iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
-#DNS
-iptables -A FORWARD -p tcp --dport 53 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 53 -j ACCEPT
 iptables -A FORWARD -p udp --dport 53 -j ACCEPT
 iptables -A FORWARD -p udp --sport 53 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -d 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
 "
 
 create_config_file "$R2" "
-ip addr add 10.0.0.3/24 dev eth0
+ip addr add 10.0.3.2/24 dev eth0
 ip link set eth0 up
 ip addr add 192.168.47.254/20 dev eth1
 ip link set eth1 up
-ip route add default via 10.0.0.1 dev eth0
+ip route add default via 10.0.3.1 dev eth0
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
 iptables -P INPUT DROP
-iptables -P FORWARD DROP 
+iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
-#mail
+iptables -A INPUT -p icmp -s 192.168.32.0/20 -j ACCEPT
+iptables -A OUTPUT -p icmp -s 192.168.32.0/20 -j ACCEPT
+iptables -A FORWARD -s 172.12.150.1 -p tcp --dport 1234 -j ACCEPT
+iptables -A FORWARD -s 192.168.32.0/20 -p tcp --dport 1234 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
-#tcp 1234
-iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
-#SSH/SFTP
-iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -j ACCEPT
-#HTTPS/HTTP
-iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
-#DNS
-iptables -A FORWARD -p tcp --dport 53 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 53 -j ACCEPT
 iptables -A FORWARD -p udp --dport 53 -j ACCEPT
 iptables -A FORWARD -p udp --sport 53 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 192.168.32.0/20 -j ACCEPT
 "
 
 create_config_file "$R3" "
-ip addr add 10.0.0.4/24 dev eth0
+ip addr add 10.0.2.2/24 dev eth0
 ip link set eth0 up
 ip addr add 11.0.0.1/26 dev eth1
 ip link set eth1 up
-ip route add default via 10.0.0.1 dev eth0
+ip route add default via 10.0.2.1 dev eth0
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
 iptables -P INPUT DROP
-iptables -P FORWARD DROP 
+iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
-#mail
-iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
-#tcp 1234
-iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
-#SSH/SFTP
-iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -j ACCEPT
-#HTTPS/HTTP
-iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
-#DNS
-iptables -A FORWARD -p tcp --dport 53 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 53 -j ACCEPT
-iptables -A FORWARD -p udp --dport 53 -j ACCEPT
-iptables -A FORWARD -p udp --sport 53 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -s 11.0.0.0/26 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -s 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -s 192.168.32.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -d 11.0.0.0/26 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -d 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -d 192.168.32.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -d 172.12.150.1 -j ACCEPT
+iptables -A INPUT -s 11.0.0.0/26 -p icmp -j ACCEPT
+iptables -A OUTPUT -d 11.0.0.0/26 -p icmp -j ACCEPT
+iptables -A FORWARD -s 172.12.150.1 -p tcp --sport 22 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -j ACCEPT
 "
 
 create_config_file "$R4" "
-ip addr add 10.0.0.5/24 dev eth0
+ip addr add 10.0.1.2/24 dev eth0
 ip link set eth0 up
 ip addr add 172.12.150.254/24 dev eth1
 ip link set eth1 up
-ip route add default via 10.0.0.1 dev eth0
+ip route add default via 10.0.1.1 dev eth0
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
 iptables -P INPUT DROP
-iptables -P FORWARD DROP 
+iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
-#mail
-iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
-#tcp 1234
-iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
-#SSH/SFTP
-iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -j ACCEPT
-#HTTPS/HTTP
-iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
-#DNS
-iptables -A FORWARD -p tcp --dport 53 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 53 -j ACCEPT
-iptables -A FORWARD -p udp --dport 53 -j ACCEPT
+iptables -A INPUT -p icmp -s 172.12.150.1 -j ACCEPT
+iptables -A OUTPUT -p icmp -d 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p icmp -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p icmp -d 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -s 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -s 192.168.32.0/20 -p icmp -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -d 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 192.168.32.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -d 11.0.0.0/26 -j ACCEPT
 iptables -A FORWARD -p udp --sport 53 -j ACCEPT
-#PING
-iptables -A FORWARD -p icmp -j ACCEPT
+iptables -A FORWARD -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -s 11.0.0.0/26 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -d 11.0.0.0/26 -j ACCEPT
 "
 
 create_config_file "$PCE1" "
 ip address add 192.168.16.1/20 dev eth0
 ip link set eth0 up
-ip route add default via 192.168.31.254 
+ip route add default via 192.168.31.254 dev eth0
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
 echo \"
 deb http://archive.debian.org/debian stretch main
@@ -257,7 +246,7 @@ apt install nmap -y
 create_config_file "$PCA1" "
 ip address add 192.168.32.1/20 dev eth0
 ip link set eth0 up
-ip route add default via 192.168.47.254 
+ip route add default via 192.168.47.254 dev eth0
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
 echo \"
 deb http://archive.debian.org/debian stretch main
@@ -271,29 +260,20 @@ apt install nmap -y
 create_config_file "$PCD1" "
 ip address add 11.0.0.2/26 dev eth0
 ip link set eth0 up
-ip route add default via  11.0.0.1 
+ip route add default via  11.0.0.1 dev eth0
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
 echo \"
 deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
-apt update
-apt install nmap -y
 "
 
 create_config_file "$S" "
 ip addr add 172.12.150.1/24 dev eth0
 ip link set eth0 up
-ip route add default via 172.12.150.254 
+ip route add default via 172.12.150.254 dev eth0
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
-echo \"
-deb http://archive.debian.org/debian stretch main
-deb http://security.debian.org/debian-security stretch/updates main
-deb http://archive.debian.org/debian stretch-updates main
-\" > /etc/apt/sources.list
-apt update
-apt install nmap -y
 "
 
 echo "Lab successfully created in $LAB"
@@ -301,7 +281,7 @@ echo "Lab successfully created in $LAB"
 if [ "$START_LAB" = true ]; then
   echo "Lab is starting ..."
   kathara lstart || exit_with_error "Error starting the lab."
-  echo "n" | kathara
+  echo "n"
 else
   echo "Lab not started. Use -s option to start the lab."
 fi
