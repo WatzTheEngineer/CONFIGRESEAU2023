@@ -115,20 +115,15 @@ iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 22 -d 192.168.16.0/20 -s 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 22 -d 192.168.16.0/20 -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 192.168.16.0/20 -d 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 22 -s 192.168.32.0/20 -d 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -s 192.168.32.0/20 -d 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -d 192.168.32.0/20 -s 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -d 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 22 -d 11.0.0.0/26 -s 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 1234 -s 192.186.16.0/20 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -d 192.186.16.0/20 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 1234 -s 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -d 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 1234 -s 192.186.32.0/20 -d 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -d 192.186.32.0/20 -s 172.12.150.1 -j ACCEPT
-"
+iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT"
 
 create_config_file "$R1" "
 ip addr add 10.0.0.2/24 dev eth0
@@ -153,7 +148,8 @@ iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
 iptables -A FORWARD -p udp --dport 53 -j ACCEPT
 iptables -A FORWARD -p udp --sport 53 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -d 192.168.16.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
 "
@@ -171,7 +167,7 @@ iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 iptables -A INPUT -p icmp -s 192.168.32.0/20 -j ACCEPT
 iptables -A OUTPUT -p icmp -s 192.168.32.0/20 -j ACCEPT
-iptables -A FORWARD -s 172.12.150.1 -p tcp --dport 1234 -j ACCEPT
+iptables -A FORWARD -s 172.12.150.1 -p tcp --sport 1234 -j ACCEPT
 iptables -A FORWARD -s 192.168.32.0/20 -p tcp --dport 1234 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
@@ -181,6 +177,7 @@ iptables -A FORWARD -p udp --dport 53 -j ACCEPT
 iptables -A FORWARD -p udp --sport 53 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -s 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 22 -s 192.168.32.0/20 -j ACCEPT
 "
 
@@ -207,6 +204,7 @@ iptables -A INPUT -s 11.0.0.0/26 -p icmp -j ACCEPT
 iptables -A OUTPUT -d 11.0.0.0/26 -p icmp -j ACCEPT
 iptables -A FORWARD -s 172.12.150.1 -p tcp --sport 22 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -j ACCEPT
+
 "
 
 create_config_file "$R4" "
@@ -235,10 +233,12 @@ iptables -A FORWARD -p tcp --sport 22 -d 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 22 -s 192.168.32.0/20 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 22 -d 11.0.0.0/26 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -d 192.168.32.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -s 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -p udp --sport 53 -j ACCEPT
 iptables -A FORWARD -p udp --dport 53 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 587 -s 11.0.0.0/26 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 587 -d 11.0.0.0/26 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 587 -s 11.0.0.0/26 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 587 -s 172.12.150.1 -j ACCEPT
 "
 
 create_config_file "$PCE1" "
