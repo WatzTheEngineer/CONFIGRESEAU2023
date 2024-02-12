@@ -10,6 +10,9 @@ R4="r4.startup"
 PCA1="pca1.startup"
 PCE1="pce1.startup"
 PCD1="pcd1.startup"
+PCA2="pca2.startup"
+PCE2="pce2.startup"
+PCD2="pcd2.startup"
 S="s.startup"
 START_LAB=false
 
@@ -79,6 +82,9 @@ s[0]=net7
 pca1[0]=net5
 pcd1[0]=net6
 pce1[0]=net4
+pca2[0]=net5
+pcd2[0]=net6
+pce2[0]=net4
 "
 
 create_config_file "$R0" "
@@ -114,16 +120,13 @@ iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -d 192.168.16.0/20 -s 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 22 -s 192.168.16.0/20 -d 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 22 -s 192.168.32.0/20 -d 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -d 192.168.32.0/20 -s 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -d 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -d 11.0.0.0/26 -s 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 587 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT"
+iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
+"
 
 create_config_file "$R1" "
 ip addr add 10.0.0.2/24 dev eth0
@@ -200,6 +203,12 @@ iptables -A FORWARD -p tcp --sport 587 -d 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 587 -d 192.168.32.0/20 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -s 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 587 -d 172.12.150.1 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
+iptables -A FORWARD -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -p udp --sport 53 -j ACCEPT
 iptables -A INPUT -s 11.0.0.0/26 -p icmp -j ACCEPT
 iptables -A OUTPUT -d 11.0.0.0/26 -p icmp -j ACCEPT
 iptables -A FORWARD -s 172.12.150.1 -p tcp --sport 22 -j ACCEPT
@@ -222,19 +231,13 @@ iptables -A INPUT -p icmp -s 172.12.150.1 -j ACCEPT
 iptables -A OUTPUT -p icmp -d 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p icmp -s 172.12.150.1 -j ACCEPT
 iptables -A FORWARD -p icmp -d 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 1234 -s 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -d 172.12.150.1 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 1234 -s 192.168.16.0/20 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -d 192.168.16.0/20 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 1234 -d 192.168.32.0/20 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 1234 -s 192.168.32.0/20 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1234 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 1234 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 22 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 22 -j ACCEPT
 iptables -A FORWARD -s 192.168.32.0/20 -p icmp -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -d 192.168.16.0/20 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 22 -s 11.0.0.0/26 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 22 -s 192.168.32.0/20 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -d 11.0.0.0/26 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 22 -d 192.168.32.0/20 -j ACCEPT
-iptables -A FORWARD -p tcp --dport 22 -s 192.168.16.0/20 -j ACCEPT
 iptables -A FORWARD -p udp --sport 53 -j ACCEPT
 iptables -A FORWARD -p udp --dport 53 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 587 -s 11.0.0.0/26 -j ACCEPT
@@ -243,6 +246,20 @@ iptables -A FORWARD -p tcp --dport 587 -s 172.12.150.1 -j ACCEPT
 
 create_config_file "$PCE1" "
 ip address add 192.168.16.1/20 dev eth0
+ip link set eth0 up
+ip route add default via 192.168.31.254 dev eth0
+echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
+echo \"
+deb http://archive.debian.org/debian stretch main
+deb http://security.debian.org/debian-security stretch/updates main
+deb http://archive.debian.org/debian stretch-updates main
+\" > /etc/apt/sources.list
+apt update
+apt install nmap -y
+"
+
+create_config_file "$PCE2" "
+ip address add 192.168.16.2/20 dev eth0
 ip link set eth0 up
 ip route add default via 192.168.31.254 dev eth0
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
@@ -269,8 +286,34 @@ apt update
 apt install nmap -y
 "
 
+create_config_file "$PCA2" "
+ip address add 192.168.32.2/20 dev eth0
+ip link set eth0 up
+ip route add default via 192.168.47.254 dev eth0
+echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
+echo \"
+deb http://archive.debian.org/debian stretch main
+deb http://security.debian.org/debian-security stretch/updates main
+deb http://archive.debian.org/debian stretch-updates main
+\" > /etc/apt/sources.list
+apt update
+apt install nmap -y
+"
+
 create_config_file "$PCD1" "
 ip address add 11.0.0.2/26 dev eth0
+ip link set eth0 up
+ip route add default via  11.0.0.1 dev eth0
+echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
+echo \"
+deb http://archive.debian.org/debian stretch main
+deb http://security.debian.org/debian-security stretch/updates main
+deb http://archive.debian.org/debian stretch-updates main
+\" > /etc/apt/sources.list
+"
+
+create_config_file "$PCD2" "
+ip address add 11.0.0.3/26 dev eth0
 ip link set eth0 up
 ip route add default via  11.0.0.1 dev eth0
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
