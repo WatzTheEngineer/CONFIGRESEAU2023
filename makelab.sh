@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sed -i '/"hosthome_mount"/a\ "image_update_policy": "Never",' /root/.config/kathara.conf
+
 LAB=""
 LAB_CONF="lab.conf"
 R0="r0.startup"
@@ -63,6 +65,10 @@ fi
 cd "$LAB" || exit_with_error "Can't enter directory $LAB"
 
 LAB_CONF_PATH="$PWD/$LAB_CONF"
+ 
+SHARED="$PWD/shared"
+mkdir "$SHARED"
+cp nettest "$SHARED/nettest"
 
 create_config_file "$LAB_CONF_PATH" "
 r0[0]=net0
@@ -244,6 +250,10 @@ iptables -A FORWARD -p tcp --sport 587 -s 11.0.0.0/26 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 587 -s 172.12.150.1 -j ACCEPT
 "
 
+create_config_file "$SHARED/pcetest.conf" "
+
+"
+
 create_config_file "$PCE1" "
 ip address add 192.168.16.1/20 dev eth0
 ip link set eth0 up
@@ -254,8 +264,6 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
-apt update
-apt install nmap -y
 "
 
 create_config_file "$PCE2" "
@@ -268,8 +276,10 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
-apt update
-apt install nmap -y
+"
+
+create_config_file "$SHARED/pcatest.conf" "
+
 "
 
 create_config_file "$PCA1" "
@@ -282,8 +292,6 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
-apt update
-apt install nmap -y
 "
 
 create_config_file "$PCA2" "
@@ -296,8 +304,10 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
-apt update
-apt install nmap -y
+"
+
+create_config_file "$SHARED/pcdtest.conf" "
+
 "
 
 create_config_file "$PCD1" "
@@ -324,11 +334,20 @@ deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
 "
 
+create_config_file "$SHARED/stest.conf" "
+
+"
+
 create_config_file "$S" "
 ip addr add 172.12.150.1/24 dev eth0
 ip link set eth0 up
 ip route add default via 172.12.150.254 dev eth0
 echo \"nameserver 8.8.8.8\" > /etc/resolv.conf
+echo \"
+deb http://archive.debian.org/debian stretch main
+deb http://security.debian.org/debian-security stretch/updates main
+deb http://archive.debian.org/debian stretch-updates main
+\" > /etc/apt/sources.list
 "
 
 echo "Lab successfully created in $LAB"
