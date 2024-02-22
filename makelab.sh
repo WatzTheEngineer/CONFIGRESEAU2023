@@ -1,6 +1,10 @@
 #!/bin/bash
 
-sed -i '/"hosthome_mount"/a\ "image_update_policy": "Never",' /root/.config/kathara.conf
+cat /root/.config/kathara.conf | grep update_policy > /dev/null
+if [ $? == 1 ]; then
+  sed -i '/"hosthome_mount"/a\ "image_update_policy": "Never",' /root/.config/kathara.conf
+  sed -i '/"hosthome_mount"/a\ "image_update_policy": "Never",' /home/iut/.config/kathara.conf
+fi
 
 LAB=""
 LAB_CONF="lab.conf"
