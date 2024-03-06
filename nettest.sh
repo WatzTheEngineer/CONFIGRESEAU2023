@@ -1,11 +1,14 @@
 #!/bin/bash
 
+clear
+
 # Vérifie si le fichier script.conf existe
 if [ ! -f "script.conf" ]; then
     echo "\e[31mErreur: Le fichier script.conf est introuvable."
     exit 1
 fi
 
+apt update -y 
 apt install nmap -y
 
 # Vérifie la disponibilité de nping
