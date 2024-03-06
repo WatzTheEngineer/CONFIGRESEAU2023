@@ -257,7 +257,7 @@ iptables -A FORWARD -p tcp --dport 587 -s 172.12.150.1 -j ACCEPT
 create_config_file "$SHARED/pcetest.conf" "tcp 80 192.168.32.1 true
 tcp 443 192.168.32.1 true
 tcp 53 192.168.32.1 true
-udp 192.168.32.1 true"
+udp 53 192.168.32.1 true"
 
 create_config_file "$PCE1" "
 ip address add 192.168.16.1/20 dev eth0
@@ -298,11 +298,11 @@ bash ./nettest.sh
 create_config_file "$SHARED/pcatest.conf" "tcp 80 192.168.16.2 true
 tcp 443 192.168.16.2 true
 tcp 53 192.168.16.2 true
-udp 192.168.16.2 true
+udp 53 192.168.16.2 true
 tcp 80 192.168.16.1 true
 tcp 443 192.168.16.1 true
 tcp 53 192.168.16.1 true
-udp 192.168.16.1 true"
+udp 53 192.168.16.1 true"
 
 create_config_file "$PCA1" "
 ip address add 192.168.32.1/20 dev eth0
