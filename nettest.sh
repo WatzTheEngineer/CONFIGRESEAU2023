@@ -8,9 +8,6 @@ if [ ! -f "script.conf" ]; then
     exit 1
 fi
 
-apt update -y 
-apt install nmap -y
-
 # Vérifie la disponibilité de nping
 nping 1>/dev/null 2>&1
 if [ $? == 127 ]; then

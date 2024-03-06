@@ -268,6 +268,8 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+apt update -y > /dev/null
+apt install nmap -y > /dev/null
 cp ./shared/pcetest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
@@ -284,6 +286,8 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+apt update -y > /dev/null
+apt install nmap -y > /dev/null
 cp ./shared/pcetest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
@@ -304,6 +308,8 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+apt update -y > /dev/null
+apt install nmap -y > /dev/null
 cp ./shared/pcatest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
@@ -320,6 +326,8 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+apt update -y > /dev/null
+apt install nmap -y > /dev/null
 cp ./shared/pcatest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
@@ -340,6 +348,8 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+apt update -y > /dev/null
+apt install nmap -y > /dev/null
 cp ./shared/pcdtest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
@@ -356,6 +366,8 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+apt update -y > /dev/null
+apt install nmap -y > /dev/null
 cp ./shared/pcdtest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
@@ -376,6 +388,8 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+apt update -y > /dev/null
+apt install nmap -y > /dev/null
 cp ./shared/stest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
