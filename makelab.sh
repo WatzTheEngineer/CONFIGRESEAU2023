@@ -273,7 +273,7 @@ apt-get install nmap -y
 cp ./shared/pcetest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
-./nettest.sh
+bash ./nettest.sh
 "
 
 create_config_file "$PCE2" "
@@ -291,7 +291,7 @@ apt-get install nmap -y
 cp ./shared/pcetest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
-./nettest.sh
+bash ./nettest.sh
 "
 
 create_config_file "$SHARED/pcatest.conf" "
@@ -313,7 +313,7 @@ apt-get install nmap -y
 cp ./shared/pcatest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
-./nettest.sh
+bash ./nettest.sh
 "
 
 create_config_file "$PCA2" "
@@ -331,7 +331,7 @@ apt-get install nmap -y
 cp ./shared/pcatest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
-./nettest.sh
+bash ./nettest.sh
 "
 
 create_config_file "$SHARED/pcdtest.conf" "
@@ -353,7 +353,7 @@ apt-get install nmap -y
 cp ./shared/pcdtest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
-./nettest.sh
+bash ./nettest.sh
 "
 
 create_config_file "$PCD2" "
@@ -371,7 +371,7 @@ apt-get install nmap -y
 cp ./shared/pcdtest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
-./nettest.sh
+bash ./nettest.sh
 "
 
 create_config_file "$SHARED/stest.conf" "
@@ -393,7 +393,7 @@ apt-get install nmap -y
 cp ./shared/stest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
 chmod a+rwx ./nettest.sh
-./nettest.sh
+bash ./nettest.sh
 "
 
 echo "Lab successfully created in $LAB"
