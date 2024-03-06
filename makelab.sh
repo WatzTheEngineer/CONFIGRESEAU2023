@@ -2,8 +2,8 @@
 
 cat /root/.config/kathara.conf | grep update_policy
 if [ $? == 1 ]; then
-  sed -i '/"hosthome_mount"/a\ "image_update_policy": "Never",' /root/.config/kathara.conf
   sed -i '/"hosthome_mount"/a\ "image_update_policy": "Never",' /home/iut/.config/kathara.conf
+  sed -i '/"hosthome_mount"/a\ "image_pull_policy": "Never",' /home/iut/.config/kathara.conf
 fi
 
 LAB=""
@@ -401,7 +401,6 @@ echo "Lab successfully created in $LAB"
 if [ "$START_LAB" = true ]; then
   echo "Lab is starting ..."
   kathara lstart || exit_with_error "Error starting the lab."
-  echo "n"
 else
   echo "Lab not started. Use -s option to start the lab."
 fi
