@@ -270,6 +270,7 @@ deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
 cp ./shared/pcetest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
+chmod a+rwx ./nettest
 ./nettest.sh
 "
 
@@ -285,6 +286,7 @@ deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
 cp ./shared/pcetest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
+chmod a+rwx ./nettest
 ./nettest.sh
 "
 
@@ -304,6 +306,7 @@ deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
 cp ./shared/pcatest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
+chmod a+rwx ./nettest
 ./nettest.sh
 "
 
@@ -319,6 +322,7 @@ deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
 cp ./shared/pcatest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
+chmod a+rwx ./nettest
 ./nettest.sh
 "
 
@@ -338,6 +342,7 @@ deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
 cp ./shared/pcdtest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
+chmod a+rwx ./nettest
 ./nettest.sh
 "
 
@@ -353,6 +358,7 @@ deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
 cp ./shared/pcdtest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
+chmod a+rwx ./nettest
 ./nettest.sh
 "
 
@@ -372,6 +378,7 @@ deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
 cp ./shared/stest.conf ./script.conf
 cp ./shared/nettest.sh ./nettest.sh
+chmod a+rwx ./nettest
 ./nettest.sh
 "
 
