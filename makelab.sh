@@ -72,7 +72,7 @@ LAB_CONF_PATH="$PWD/$LAB_CONF"
  
 SHARED="$PWD/shared"
 mkdir "$SHARED"
-cp nettest "$SHARED/nettest"
+cp nettest.sh "$SHARED/nettest.sh"
 
 create_config_file "$LAB_CONF_PATH" "
 r0[0]=net0
@@ -268,6 +268,9 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+cp ./shared/pcetest.conf ./script.conf
+cp ./shared/nettest.sh ./nettest.sh
+./nettest.sh
 "
 
 create_config_file "$PCE2" "
@@ -280,6 +283,9 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+cp ./shared/pcetest.conf ./script.conf
+cp ./shared/nettest.sh ./nettest.sh
+./nettest.sh
 "
 
 create_config_file "$SHARED/pcatest.conf" "
@@ -296,6 +302,9 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+cp ./shared/pcatest.conf ./script.conf
+cp ./shared/nettest.sh ./nettest.sh
+./nettest.sh
 "
 
 create_config_file "$PCA2" "
@@ -308,6 +317,9 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+cp ./shared/pcatest.conf ./script.conf
+cp ./shared/nettest.sh ./nettest.sh
+./nettest.sh
 "
 
 create_config_file "$SHARED/pcdtest.conf" "
@@ -324,6 +336,9 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+cp ./shared/pcdtest.conf ./script.conf
+cp ./shared/nettest.sh ./nettest.sh
+./nettest.sh
 "
 
 create_config_file "$PCD2" "
@@ -336,6 +351,9 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+cp ./shared/pcdtest.conf ./script.conf
+cp ./shared/nettest.sh ./nettest.sh
+./nettest.sh
 "
 
 create_config_file "$SHARED/stest.conf" "
@@ -352,6 +370,9 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
+cp ./shared/stest.conf ./script.conf
+cp ./shared/nettest.sh ./nettest.sh
+./nettest.sh
 "
 
 echo "Lab successfully created in $LAB"
