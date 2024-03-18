@@ -257,7 +257,19 @@ iptables -A FORWARD -p tcp --dport 587 -s 172.12.150.1 -j ACCEPT
 create_config_file "$SHARED/pcetest.conf" "tcp 80 192.168.32.1 true
 tcp 443 192.168.32.1 true
 tcp 53 192.168.32.1 true
-udp 53 192.168.32.1 true"
+udp 53 192.168.32.1 true
+tcp 80 192.168.32.2 true
+tcp 443 192.168.32.2 true
+tcp 53 192.168.32.2 true
+udp 53 192.168.32.2 true
+tcp 22 192.168.32.1 false
+tcp 23 192.168.32.1 false
+tcp 25565 192.168.32.1 false
+udp 22 192.168.32.1 false
+tcp 443 172.12.150.1 true
+tcp 53 172.12.150.1 true
+udp 53 172.12.150.1 true
+tcp 80 172.12.150.1 false"
 
 create_config_file "$PCE1" "
 ip address add 192.168.16.1/20 dev eth0
@@ -302,7 +314,19 @@ udp 53 192.168.16.2 true
 tcp 80 192.168.16.1 true
 tcp 443 192.168.16.1 true
 tcp 53 192.168.16.1 true
-udp 53 192.168.16.1 true"
+udp 53 192.168.16.1 true
+tcp 22 192.168.16.1 false
+tcp 23 192.168.16.1 false
+tcp 25565 192.168.16.1 false
+udp 22 192.168.16.1 false
+tcp 80 11.0.0.2 true
+tcp 443 11.0.0.2 true
+tcp 53 11.0.0.2 true
+udp 53 11.0.0.2 true
+tcp 443 172.12.150.1 true
+tcp 53 172.12.150.1 true
+udp 53 172.12.150.1 true
+tcp 80 172.12.150.1 false"
 
 create_config_file "$PCA1" "
 ip address add 192.168.32.1/20 dev eth0
@@ -340,9 +364,18 @@ chmod a+rwx ./nettest.sh
 bash ./nettest.sh
 "
 
-create_config_file "$SHARED/pcdtest.conf" "
-
-"
+create_config_file "$SHARED/pcdtest.conf" "tcp 22 192.168.32.1 false
+tcp 23 192.168.32.1 false
+tcp 25565 192.168.32.1 false
+udp 22 192.168.32.1 false
+tcp 80 192.168.16.1 true
+tcp 443 192.168.16.1 true
+tcp 53 192.168.16.1 true
+udp 53 192.168.16.1 true
+tcp 443 172.12.150.1 true
+tcp 53 172.12.150.1 true
+udp 53 172.12.150.1 true
+tcp 80 172.12.150.1 false"
 
 create_config_file "$PCD1" "
 ip address add 11.0.0.2/26 dev eth0
