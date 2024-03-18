@@ -380,10 +380,6 @@ chmod a+rwx ./nettest.sh
 bash ./nettest.sh
 "
 
-create_config_file "$SHARED/stest.conf" "
-
-"
-
 create_config_file "$S" "
 ip addr add 172.12.150.1/24 dev eth0
 ip link set eth0 up
@@ -394,12 +390,6 @@ deb http://archive.debian.org/debian stretch main
 deb http://security.debian.org/debian-security stretch/updates main
 deb http://archive.debian.org/debian stretch-updates main
 \" > /etc/apt/sources.list
-apt-get update -y
-apt-get install nmap -y
-cp ./shared/stest.conf ./script.conf
-cp ./shared/nettest.sh ./nettest.sh
-chmod a+rwx ./nettest.sh
-bash ./nettest.sh
 "
 
 echo "Lab successfully created in $LAB"
